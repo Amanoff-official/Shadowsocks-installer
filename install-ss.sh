@@ -15,11 +15,20 @@ config_user_api_file="${ssr_folder}/userapiconfig.py"
 config_user_mudb_file="${ssr_folder}/mudb.json"
 ssr_log_file="${ssr_folder}/ssserver.log"
 Libsodiumr_file="/usr/local/lib/libsodium.so"
-Libsodiumr_ver_backup="1.0.15"
+Libsodiumr_ver_backup="1.0.20"
 jq_file="${ssr_folder}/jq"
+
+
+Blue='\033[34m' && Blue='\033[32m' && Red_font_prefix='\033[31m' && Blue_background_prefix='\033[42;37m' && Red_background_prefix='\033[41;37m' && Font_color_suffix='\033[0m' && Blue='\033[32m' && Red='\033[31m' && Yellow='\033[33m' && Blue='\033[34m' && Purple='\033[35m' && Ocean='\033[36m' && Black='\033[37m' && Morg="\033[5m" && Reverse="\033[7m" && Font="\033[1m"
+Error="${Red_font_prefix}[Ошибка]${Font_color_suffix}"
+T="${Blue}[Заметка]${Font_color_suffix}"
+Separator_1="—————————————————————————————"
 
 check_root(){
 	[[ $EUID != 0 ]] && echo -e "${Error} Скрипт не запущен от root. Пропишите ${Blue_background_prefix} sudo su ${Font_color_suffix} И перезапустите программу." && exit 1
+}
+Modify_user_api_server_pub_addr(){
+	sed -i "s/SERVER_PUB_ADDR = '${server_pub_addr}'/SERVER_PUB_ADDR = '${ssr_server_pub_addr}'/" ${config_user_api_file}
 }
 check_sys(){
 	if [[ -f /etc/redhat-release ]]; then
@@ -220,9 +229,7 @@ get_IP_address(){
 	fi
 }
 Check_Libsodium_ver(){
-	echo -e "${Info} Начинаю получение последней версии libsodium..."
-	Libsodiumr_ver=$(wget -qO- "https://github.com/jedisct1/libsodium/tags"|grep "/jedisct1/libsodium/releases/tag/"|head -1|sed -r 's/.*tag\/(.+)\">.*/\1/')
-	[[ -z ${Libsodiumr_ver} ]] && Libsodiumr_ver=${Libsodiumr_ver_backup}
+	Libsodiumr_ver="1.0.20"
 	echo -e "${Info} Последняя версия libsodium: ${Blue}${Libsodiumr_ver}${Font_color_suffix} !"
 }
 OpenVPN(){
